@@ -2,15 +2,18 @@ import {
   SET_ERRORS,
   CLEAR_ERRORS,
   LOADING_UI,
-  STOP_LOADING_UI
+  STOP_LOADING_UI,
+  SET_SERVER_ERROR,
+  CLEAR_SERVER_ERROR
 } from '../types';
 
 const initialState = {
   loading: false,
-  errors: null
+  errors: null,
+  serverError: false
 };
 
-export default function(state = initialState, action) {
+export default function uiReducer(state = initialState, action) {
   switch (action.type) {
     case SET_ERRORS:
       return {
@@ -34,7 +37,20 @@ export default function(state = initialState, action) {
         ...state,
         loading: false
       };
+    case SET_SERVER_ERROR:
+      return {
+        ...state,
+        loading: false,
+        serverError: true
+      };
+    case CLEAR_SERVER_ERROR:
+      return {
+        ...state,
+        serverError: false,
+        errors: null
+      };
     default:
       return state;
   }
 }
+

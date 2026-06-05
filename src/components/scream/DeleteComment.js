@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
 import MyButton from '../../util/MyButton';
 
@@ -11,35 +10,32 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
 import { connect } from 'react-redux';
-import { deleteScream } from '../../redux/actions/dataActions';
+import { deleteComment } from '../../redux/actions/dataActions';
 
-const styles = {
-  deleteButton: {}
-};
-
-class DeleteScream extends Component {
+class DeleteComment extends Component {
   state = {
     open: false
   };
+
   handleOpen = () => {
     this.setState({ open: true });
   };
+
   handleClose = () => {
     this.setState({ open: false });
   };
-  deleteScream = () => {
-    this.props.deleteScream(this.props.screamId);
+
+  deleteComment = () => {
+    this.props.deleteComment(this.props.commentId);
     this.setState({ open: false });
   };
-  render() {
-    const { classes } = this.props;
 
+  render() {
     return (
       <Fragment>
         <MyButton
-          tip="Delete Scream"
+          tip="Delete Comment"
           onClick={this.handleOpen}
-          btnClassName={classes.deleteButton}
         >
           <DeleteOutline color="secondary" />
         </MyButton>
@@ -50,13 +46,13 @@ class DeleteScream extends Component {
           maxWidth="sm"
         >
           <DialogTitle>
-            Are you sure you want to delete this scream ?
+            Are you sure you want to delete this comment?
           </DialogTitle>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.deleteScream} color="secondary">
+            <Button onClick={this.deleteComment} color="secondary">
               Delete
             </Button>
           </DialogActions>
@@ -66,13 +62,12 @@ class DeleteScream extends Component {
   }
 }
 
-DeleteScream.propTypes = {
-  deleteScream: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
-  screamId: PropTypes.string.isRequired
+DeleteComment.propTypes = {
+  deleteComment: PropTypes.func.isRequired,
+  commentId: PropTypes.string.isRequired
 };
 
 export default connect(
   null,
-  { deleteScream }
-)(withStyles(styles)(DeleteScream));
+  { deleteComment }
+)(DeleteComment);

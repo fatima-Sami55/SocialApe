@@ -15,7 +15,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 // Icons
 import CloseIcon from '@material-ui/icons/Close';
-import UnfoldMore from '@material-ui/icons/UnfoldMore';
 import ChatIcon from '@material-ui/icons/Chat';
 // Redux stuff
 import { connect } from 'react-redux';
@@ -33,10 +32,6 @@ const styles = (theme) => ({
     padding: 20
   },
   closeButton: {
-    position: 'absolute',
-    left: '90%'
-  },
-  expandButton: {
     position: 'absolute',
     left: '90%'
   },
@@ -85,10 +80,9 @@ class ScreamDialog extends Component {
         body,
         createdAt,
         likeCount,
-        commentCount,
         userImage,
         userHandle,
-        comments
+        userName
       },
       UI: { loading }
     } = this.props;
@@ -109,7 +103,9 @@ class ScreamDialog extends Component {
             variant="h5"
             to={`/users/${userHandle}`}
           >
-            @{userHandle}
+            {userHandle === this.props.user.credentials.handle
+              ? this.props.user.credentials.name || userHandle
+              : userName || userHandle}
           </Typography>
           <hr className={classes.invisibleSeparator} />
           <Typography variant="body2" color="textSecondary">
@@ -133,10 +129,9 @@ class ScreamDialog extends Component {
       <Fragment>
         <MyButton
           onClick={this.handleOpen}
-          tip="Expand scream"
-          tipClassName={classes.expandButton}
+          tip="Comment"
         >
-          <UnfoldMore color="primary" />
+          <ChatIcon color="primary" />
         </MyButton>
         <Dialog
           open={this.state.open}
@@ -166,12 +161,14 @@ ScreamDialog.propTypes = {
   screamId: PropTypes.string.isRequired,
   userHandle: PropTypes.string.isRequired,
   scream: PropTypes.object.isRequired,
-  UI: PropTypes.object.isRequired
+  UI: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
   scream: state.data.scream,
-  UI: state.UI
+  UI: state.UI,
+  user: state.user
 });
 
 const mapActionsToProps = {

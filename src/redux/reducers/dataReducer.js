@@ -6,7 +6,10 @@ import {
   DELETE_SCREAM,
   POST_SCREAM,
   SET_SCREAM,
-  SUBMIT_COMMENT
+  SUBMIT_COMMENT,
+  EDIT_SCREAM,
+  DELETE_COMMENT,
+  EDIT_COMMENT
 } from '../types';
 
 const initialState = {
@@ -67,6 +70,47 @@ export default function dataReducer(state = initialState, action) {
     }
   };
 
+    case EDIT_SCREAM:
+      return {
+        ...state,
+        screams: state.screams.map((scream) =>
+          scream.screamId === action.payload.screamId
+            ? { ...scream, body: action.payload.body }
+            : scream
+        ),
+        scream:
+          state.scream.screamId === action.payload.screamId
+            ? { ...state.scream, body: action.payload.body }
+            : state.scream
+      };
+
+    case DELETE_COMMENT:
+      return {
+        ...state,
+        screams: state.screams.map((scream) =>
+          scream.screamId === state.scream.screamId
+            ? { ...scream, commentCount: Math.max(0, (scream.commentCount || 0) - 1) }
+            : scream
+        ),
+        scream: {
+          ...state.scream,
+          commentCount: Math.max(0, (state.scream.commentCount || 0) - 1),
+          comments: state.scream.comments.filter((c) => c.commentId !== action.payload.commentId)
+        }
+      };
+
+    case EDIT_COMMENT:
+      return {
+        ...state,
+        scream: {
+          ...state.scream,
+          comments: state.scream.comments.map((comment) =>
+            comment.commentId === action.payload.commentId
+              ? { ...comment, body: action.payload.body }
+              : comment
+          )
+        }
+      };
 
     default:
       return state;

@@ -10,7 +10,10 @@ import {
   LOADING_UI,
   SET_SCREAM,
   STOP_LOADING_UI,
-  SUBMIT_COMMENT
+  SUBMIT_COMMENT,
+  EDIT_SCREAM,
+  DELETE_COMMENT,
+  EDIT_COMMENT
 } from '../types';
 import axios from 'axios';
 
@@ -115,4 +118,40 @@ export const getUserData = (userHandle) => (dispatch) => {
         payload: []
       });
     });
+};
+
+export const editScream = (screamId, bodyData) => (dispatch) => {
+  axios
+    .post(`/scream/${screamId}/edit`, { body: bodyData })
+    .then(() => {
+      dispatch({
+        type: EDIT_SCREAM,
+        payload: { screamId, body: bodyData }
+      });
+    })
+    .catch((err) => console.error(err));
+};
+
+export const deleteComment = (commentId) => (dispatch) => {
+  axios
+    .delete(`/comment/${commentId}`)
+    .then(() => {
+      dispatch({
+        type: DELETE_COMMENT,
+        payload: { commentId }
+      });
+    })
+    .catch((err) => console.error(err));
+};
+
+export const editComment = (commentId, bodyData) => (dispatch) => {
+  axios
+    .post(`/comment/${commentId}/edit`, { body: bodyData })
+    .then(() => {
+      dispatch({
+        type: EDIT_COMMENT,
+        payload: { commentId, body: bodyData }
+      });
+    })
+    .catch((err) => console.error(err));
 };

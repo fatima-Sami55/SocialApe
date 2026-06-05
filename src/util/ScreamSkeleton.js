@@ -1,68 +1,116 @@
 import React, { Fragment } from 'react';
-import NoImg from '../images/no-img.png';
 import PropTypes from 'prop-types';
-// MUI
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-
 import withStyles from '@material-ui/core/styles/withStyles';
 
 const styles = (theme) => ({
-  ...theme,
+  '@keyframes pulse': {
+    '0%': {
+      backgroundColor: '#E5D6CD',
+      opacity: 0.6
+    },
+    '50%': {
+      backgroundColor: '#CFBDB2',
+      opacity: 1
+    },
+    '100%': {
+      backgroundColor: '#E5D6CD',
+      opacity: 0.6
+    }
+  },
+  pulse: {
+    animation: '$pulse 1.5s infinite ease-in-out'
+  },
   card: {
     display: 'flex',
-    marginBottom: 20
+    padding: '18px 24px',
+    backgroundColor: '#ffffff',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
   },
-  cardContent: {
-    width: '100%',
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: '50%',
+    marginRight: 16,
+    flexShrink: 0
+  },
+  contentWrapper: {
+    display: 'flex',
     flexDirection: 'column',
-    padding: 25
+    width: '100%',
+    minWidth: 0,
+    gap: 8
   },
-  cover: {
-    minWidth: 200,
-    objectFit: 'cover'
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4
   },
-  handle: {
-    width: 60,
-    height: 18,
-    backgroundColor: theme.palette.primary.main,
-    marginBottom: 7
-  },
-  date: {
-    height: 14,
+  namePlaceholder: {
     width: 100,
-    backgroundColor: 'rgba(0,0,0, 0.3)',
-    marginBottom: 10
+    height: 16,
+    borderRadius: 4
   },
-  fullLine: {
-    height: 15,
+  handlePlaceholder: {
+    width: 70,
+    height: 14,
+    borderRadius: 4
+  },
+  datePlaceholder: {
+    width: 50,
+    height: 14,
+    borderRadius: 4
+  },
+  bodyLineFull: {
+    height: 14,
     width: '90%',
-    backgroundColor: 'rgba(0,0,0, 0.6)',
-    marginBottom: 10
+    borderRadius: 4
   },
-  halfLine: {
-    height: 15,
+  bodyLineHalf: {
+    height: 14,
     width: '50%',
-    backgroundColor: 'rgba(0,0,0, 0.6)',
-    marginBottom: 10
+    borderRadius: 4
+  },
+  actionButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '32px',
+    marginTop: 4
+  },
+  actionPlaceholder: {
+    width: 60,
+    height: 16,
+    borderRadius: 4
   }
 });
 
 const ScreamSkeleton = (props) => {
   const { classes } = props;
+  const pulseClass = classes.pulse;
 
-  const content = Array.from({ length: 5 }).map((item, index) => (
-    <Card className={classes.card} key={index}>
-      <CardMedia className={classes.cover} image={NoImg} />
-      <CardContent className={classes.cardContent}>
-        <div className={classes.handle} />
-        <div className={classes.date} />
-        <div className={classes.fullLine} />
-        <div className={classes.fullLine} />
-        <div className={classes.halfLine} />
-      </CardContent>
-    </Card>
+  const content = Array.from({ length: 4 }).map((_, index) => (
+    <div className={classes.card} key={index}>
+      <div className={`${classes.avatar} ${pulseClass}`} />
+      <div className={classes.contentWrapper}>
+        <div className={classes.header}>
+          <div className={`${classes.namePlaceholder} ${pulseClass}`} />
+          <div className={`${classes.handlePlaceholder} ${pulseClass}`} />
+          <span style={{ color: '#CFBDB2', fontSize: '0.85rem' }}>·</span>
+          <div className={`${classes.datePlaceholder} ${pulseClass}`} />
+        </div>
+        
+        {/* Body lines */}
+        <div className={`${classes.bodyLineFull} ${pulseClass}`} />
+        <div className={`${classes.bodyLineFull} ${pulseClass}`} />
+        <div className={`${classes.bodyLineHalf} ${pulseClass}`} />
+
+        {/* Action placeholders */}
+        <div className={classes.actionButtons}>
+          <div className={`${classes.actionPlaceholder} ${pulseClass}`} />
+          <div className={`${classes.actionPlaceholder} ${pulseClass}`} />
+        </div>
+      </div>
+    </div>
   ));
 
   return <Fragment>{content}</Fragment>;

@@ -7,6 +7,8 @@ import dayjs from 'dayjs';
 // MUI
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import EditComment from './EditComment';
+import DeleteComment from './DeleteComment';
 
 const styles = (theme) => ({
   ...theme,
@@ -21,14 +23,15 @@ const styles = (theme) => ({
   }
 });
 
-const Comments = ({ classes, scream: { comments = [] } }) => (
+const Comments = ({ classes, user: { credentials: { handle, name } }, scream: { comments = [] } }) => (
   <Grid container>
     {comments.map((comment, index) => {
-      const { body, createdAt, userImage, userHandle } = comment;
+      const { commentId, body, createdAt, userImage, userHandle, userName } = comment;
+      const commenterName = userHandle === handle ? name || handle : userName || userHandle;
       return (
         <React.Fragment key={createdAt + index}>
           <Grid item sm={12}>
-            <Grid container>
+            <Grid container alignItems="center">
               <Grid item sm={2}>
                 <img
                   src={userImage}
@@ -36,7 +39,7 @@ const Comments = ({ classes, scream: { comments = [] } }) => (
                   className={classes.commentImage}
                 />
               </Grid>
-              <Grid item sm={9}>
+              <Grid item sm={8}>
                 <div className={classes.commentData}>
                   <Typography
                     variant="h5"
@@ -44,7 +47,7 @@ const Comments = ({ classes, scream: { comments = [] } }) => (
                     to={`/users/${userHandle}`}
                     color="primary"
                   >
-                    {userHandle}
+                    {commenterName}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     {dayjs(createdAt).format('h:mm a, MMMM DD YYYY')}
@@ -52,6 +55,14 @@ const Comments = ({ classes, scream: { comments = [] } }) => (
                   <hr className={classes.invisibleSeparator} />
                   <Typography variant="body1">{body}</Typography>
                 </div>
+              </Grid>
+              <Grid item sm={2}>
+                {userHandle === handle && commentId && (
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <EditComment commentId={commentId} commentBody={body} />
+                    <DeleteComment commentId={commentId} />
+                  </div>
+                )}
               </Grid>
             </Grid>
           </Grid>
@@ -65,11 +76,14 @@ const Comments = ({ classes, scream: { comments = [] } }) => (
 );
 
 Comments.propTypes = {
-  scream: PropTypes.object.isRequired
+  scream: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  scream: state.data.scream
+  scream: state.data.scream,
+  user: state.user
 });
 
 export default connect(mapStateToProps)(withStyles(styles)(Comments));

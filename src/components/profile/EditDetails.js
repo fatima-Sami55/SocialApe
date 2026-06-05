@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
-import MyButton from '../../util/MyButton';
 // Redux stuff
 import { connect } from 'react-redux';
 import { editUserDetails } from '../../redux/actions/userActions';
@@ -12,18 +11,27 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-// Icons
-import EditIcon from '@material-ui/icons/Edit';
 
 const styles = (theme) => ({
   ...theme,
-  button: {
-    float: 'right'
+  editProfileBtn: {
+    border: '1px solid #CFD9DE !important',
+    borderRadius: '9999px !important',
+    textTransform: 'none !important',
+    fontWeight: '700 !important',
+    fontFamily: '"Outfit", sans-serif !important',
+    padding: '6px 16px !important',
+    fontSize: '0.85rem !important',
+    color: '#0F1419 !important',
+    '&:hover': {
+      backgroundColor: 'rgba(15, 20, 25, 0.04) !important'
+    }
   }
 });
 
 class EditDetails extends Component {
   state = {
+    name: '',
     bio: '',
     website: '',
     location: '',
@@ -31,6 +39,7 @@ class EditDetails extends Component {
   };
   mapUserDetailsToState = (credentials) => {
     this.setState({
+      name: credentials.name ? credentials.name : '',
       bio: credentials.bio ? credentials.bio : '',
       website: credentials.website ? credentials.website : '',
       location: credentials.location ? credentials.location : ''
@@ -55,6 +64,7 @@ class EditDetails extends Component {
   };
   handleSubmit = () => {
     const userDetails = {
+      name: this.state.name,
       bio: this.state.bio,
       website: this.state.website,
       location: this.state.location
@@ -66,13 +76,13 @@ class EditDetails extends Component {
     const { classes } = this.props;
     return (
       <Fragment>
-        <MyButton
-          tip="Edit Details"
+        <Button
+          variant="outlined"
           onClick={this.handleOpen}
-          btnClassName={classes.button}
+          className={classes.editProfileBtn}
         >
-          <EditIcon color="primary" />
-        </MyButton>
+          Edit Profile
+        </Button>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
@@ -83,8 +93,18 @@ class EditDetails extends Component {
           <DialogContent>
             <form>
               <TextField
+                name="name"
+                type="text"
+                label="Name"
+                placeholder="Your display name"
+                className={classes.textField}
+                value={this.state.name}
+                onChange={this.handleChange}
+                fullWidth
+              />
+              <TextField
                 name="bio"
-                tpye="text"
+                type="text"
                 label="Bio"
                 multiline
                 rows="3"
@@ -96,9 +116,9 @@ class EditDetails extends Component {
               />
               <TextField
                 name="website"
-                tpye="text"
+                type="text"
                 label="Website"
-                placeholder="Your personal/professinal website"
+                placeholder="Your personal/professional website"
                 className={classes.textField}
                 value={this.state.website}
                 onChange={this.handleChange}
@@ -106,7 +126,7 @@ class EditDetails extends Component {
               />
               <TextField
                 name="location"
-                tpye="text"
+                type="text"
                 label="Location"
                 placeholder="Where you live"
                 className={classes.textField}

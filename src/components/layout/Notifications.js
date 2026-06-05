@@ -7,13 +7,13 @@ import PropTypes from 'prop-types';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 // Icons
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ChatIcon from '@material-ui/icons/Chat';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 // Redux
 import { connect } from 'react-redux';
 import { markNotificationsRead } from '../../redux/actions/userActions';
@@ -60,15 +60,28 @@ class Notifications extends Component {
     let notificationsMarkup =
       notifications && notifications.length > 0 ? (
         notifications.map((not) => {
-          const verb = not.type === 'like' ? 'liked' : 'commented on';
+          const verb =
+            not.type === 'like'
+              ? 'liked your scream'
+              : not.type === 'follow'
+              ? 'followed you'
+              : 'commented on your scream';
           const time = dayjs(not.createdAt).fromNow();
           const iconColor = not.read ? 'primary' : 'secondary';
-          const icon =
-            not.type === 'like' ? (
-              <FavoriteIcon color={iconColor} style={{ marginRight: 10 }} />
-            ) : (
-              <ChatIcon color={iconColor} style={{ marginRight: 10 }} />
-            );
+          
+          let icon;
+          if (not.type === 'like') {
+            icon = <FavoriteIcon color={iconColor} style={{ marginRight: 10 }} />;
+          } else if (not.type === 'follow') {
+            icon = <PersonAddIcon color={iconColor} style={{ marginRight: 10 }} />;
+          } else {
+            icon = <ChatIcon color={iconColor} style={{ marginRight: 10 }} />;
+          }
+
+          const linkTo =
+            not.type === 'follow'
+              ? `/users/${not.sender}`
+              : `/users/${not.recipient}/scream/${not.screamId}`;
 
           return (
             <MenuItem key={not.createdAt} onClick={this.handleClose}>
@@ -77,9 +90,9 @@ class Notifications extends Component {
                 component={Link}
                 color="default"
                 variant="body1"
-                to={`/users/${not.recipient}/scream/${not.screamId}`}
+                to={linkTo}
               >
-                {not.sender} {verb} your scream {time}
+                {not.sender} {verb} {time}
               </Typography>
             </MenuItem>
           );
@@ -91,15 +104,21 @@ class Notifications extends Component {
       );
     return (
       <Fragment>
-        <Tooltip placement="top" title="Notifications">
+        {this.props.isMobile ? (
           <IconButton
             aria-owns={anchorEl ? 'simple-menu' : undefined}
             aria-haspopup="true"
             onClick={this.handleOpen}
+            style={{ color: '#0F1419' }}
           >
             {notificationsIcon}
           </IconButton>
-        </Tooltip>
+        ) : (
+          <div className="menu-item" onClick={this.handleOpen}>
+            {notificationsIcon}
+            <span>Notification</span>
+          </div>
+        )}
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}

@@ -4,7 +4,9 @@ import {
   CLEAR_ERRORS,
   LOADING_UI,
   SET_UNAUTHENTICATED,
-  LOADING_USER
+  LOADING_USER,
+  FOLLOW_USER,
+  UNFOLLOW_USER
 } from '../types';
 import axios from 'axios';
 
@@ -75,10 +77,19 @@ export const logoutUser = () => (dispatch) => {
 // UPLOAD PROFILE IMAGE
 export const uploadImage = (formData) => (dispatch) => {
   dispatch({ type: LOADING_USER });
-    for (const pair of formData.entries()) {
+  for (const pair of formData.entries()) {
     console.log(`${pair[0]}:`, pair[1]);  // ⬅️ this prints "image: File { ... }"
   }
   axios.post('/user/image', formData)
+    .then(() => {
+      dispatch(getUserData());
+    })
+    .catch((err) => console.error(err));
+};
+// UPLOAD BANNER IMAGE
+export const uploadBannerImage = (formData) => (dispatch) => {
+  dispatch({ type: LOADING_USER });
+  axios.post('/user/banner', formData)
     .then(() => {
       dispatch(getUserData());
     })
@@ -98,6 +109,22 @@ export const markNotificationsRead = (notificationIds) => (dispatch) => {
   axios.post('/notifications', notificationIds)
     .then(() => {
       dispatch(getUserData());
+    })
+    .catch((err) => console.error(err));
+};
+// FOLLOW A USER
+export const followUser = (handle) => (dispatch) => {
+  axios.post(`/user/${handle}/follow`)
+    .then(() => {
+      dispatch({ type: FOLLOW_USER, payload: handle });
+    })
+    .catch((err) => console.error(err));
+};
+// UNFOLLOW A USER
+export const unfollowUser = (handle) => (dispatch) => {
+  axios.post(`/user/${handle}/unfollow`)
+    .then(() => {
+      dispatch({ type: UNFOLLOW_USER, payload: handle });
     })
     .catch((err) => console.error(err));
 };

@@ -68,11 +68,23 @@ class PostScream extends Component {
       classes,
       UI: { loading }
     } = this.props;
+    const trigger = this.props.isSidebar ? (
+      <Button className="sidebar-post-button" onClick={this.handleOpen}>
+        <span>Post</span>
+      </Button>
+    ) : this.props.isMobileFAB ? (
+      <div className="mobile-fab-post" onClick={this.handleOpen}>
+        <AddIcon />
+      </div>
+    ) : (
+      <MyButton onClick={this.handleOpen} tip="Post a Scream!">
+        <AddIcon />
+      </MyButton>
+    );
+
     return (
       <Fragment>
-        <MyButton onClick={this.handleOpen} tip="Post a Scream!">
-          <AddIcon />
-        </MyButton>
+        {trigger}
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
