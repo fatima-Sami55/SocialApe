@@ -1,4 +1,4 @@
-# Social Media Application
+# SocialApe
 
 A full-stack social media application featuring user authentication, post creation, social interactions, profile management, and real-time notifications. The project is designed with a serverless backend powered by Firebase Cloud Functions and Firestore, and a responsive frontend built using React and Redux.
 
