@@ -14,14 +14,23 @@ import AppLayout from './components/layout/AppLayout';
 import ErrorBoundary from './components/layout/ErrorBoundary';
 import themeObject from './util/theme';
 import AuthRoute from './util/AuthRoute';
-// Pages
-import home from './pages/home';
-import login from './pages/login';
-import signup from './pages/signup';
-import user from './pages/user';
-import NotFound from './pages/NotFound';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
+
+// Lazy load pages for optimized loading speed and visual user feedback
+const home = React.lazy(() => import('./pages/home'));
+const login = React.lazy(() => import('./pages/login'));
+const signup = React.lazy(() => import('./pages/signup'));
+const user = React.lazy(() => import('./pages/user'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
+
+const LazyLoader = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+    <CircularProgress size={60} thickness={4} style={{ color: '#1D9BF0' }} />
+  </div>
+);
+
+
 
 const theme = createMuiTheme(themeObject);
 
@@ -58,18 +67,20 @@ class App extends Component {
           <Provider store={store}>
             <Router>
               <AppLayout>
-                <Switch>
-                  <Route exact path="/" component={home} />
-                  <AuthRoute exact path="/login" component={login} />
-                  <AuthRoute exact path="/signup" component={signup} />
-                  <Route exact path="/users/:handle" component={user} />
-                  <Route
-                    exact
-                    path="/users/:handle/scream/:screamId"
-                    component={user}
-                  />
-                  <Route component={NotFound} />
-                </Switch>
+                <React.Suspense fallback={<LazyLoader />}>
+                  <Switch>
+                    <Route exact path="/" component={home} />
+                    <AuthRoute exact path="/login" component={login} />
+                    <AuthRoute exact path="/signup" component={signup} />
+                    <Route exact path="/users/:handle" component={user} />
+                    <Route
+                      exact
+                      path="/users/:handle/scream/:screamId"
+                      component={user}
+                    />
+                    <Route component={NotFound} />
+                  </Switch>
+                </React.Suspense>
               </AppLayout>
             </Router>
           </Provider>
